@@ -2,10 +2,12 @@
 const express=require("express")
 const myrouter=express.Router();
 const connection=require("../db/dbconnect")
+
 //to login page
 myrouter.get('/login', function(req, res){
     res.render('login');
 });
+
 //check login credentials
 myrouter.post('/login', function(req, res) {
     connection.query('SELECT * FROM user WHERE email = ? AND password = ?',[req.body.email, req.body.password], 
@@ -17,6 +19,7 @@ myrouter.post('/login', function(req, res) {
         }
     });
 });
+
 //get all courses
 myrouter.get("/courses",function(req,resp){
     connection.query("select * from course",function(err,data){
@@ -28,6 +31,7 @@ myrouter.get("/courses",function(req,resp){
         }
     })
 })
+
 //add course
 myrouter.post("/insertcourse",function(req,resp){
     connection.query("insert into course values(?,?,?,?)",[req.body.cid,req.body.cname,req.body.fees,req.body.duration],function(err,result){
@@ -39,14 +43,17 @@ myrouter.post("/insertcourse",function(req,resp){
             }
         })
     })
+    
 //empty form to add data
 myrouter.get("/addcourseform",function(req,resp){
     resp.render("addcourse")
 })
+
 //logout
 myrouter.get("/logout",function(req,res){
     res.render("login")
 })
+
 //delete course
 myrouter.get("/deletecourse/:id",function(req,resp){
     connection.query("delete from course where cid=?",[req.params.id],function(err,result){
@@ -58,6 +65,7 @@ myrouter.get("/deletecourse/:id",function(req,resp){
         }
     })
 })
+
 //update firstly take id
 myrouter.get("/editcourse/:id",function(req,resp){
     connection.query("select * from course where cid=?",[req.params.id],function(err,data){
@@ -69,6 +77,7 @@ myrouter.get("/editcourse/:id",function(req,resp){
         }
     })
 })
+
 //update actual data
 myrouter.post("/updatecourse",function(req,resp){
     connection.query("update course set cname=?,fees=?,duration=? where cid=?",[req.body.cname,req.body.fees,req.body.duration,req.body.cid],function(err,result){
@@ -80,18 +89,23 @@ myrouter.post("/updatecourse",function(req,resp){
         }
     })
 })
+
 module.exports=myrouter;
 
 //------------------------- app.js -------------------------------<br>
+
 const express = require("express")
 const app = express()
 const path = require("path")
 const routes = require("./routes/router")
 const bodyParser = require('body-parser')
+
 app.set('views',path.join(__dirname,"views"))
 app.set("view engine","ejs")
+
 app.use(bodyParser.urlencoded({extended:false}))
 app.use("/",routes)
+
 app.listen(3003,function(){
     console.log("server started at 3003");
 })
@@ -108,6 +122,7 @@ const mysqlConnection = mysql.createConnection(
    port:3306
 
 })
+
 mysqlConnection.connect((error)=>{
     if(error)
     {
@@ -117,6 +132,7 @@ mysqlConnection.connect((error)=>{
         console.log("connected")
     }
 })
+
 module.exports=mysqlConnection;
 
 //------------------------ addcourse.ejs ------------------------------<br>
